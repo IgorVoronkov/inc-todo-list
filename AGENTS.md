@@ -3,12 +3,37 @@
 ## Project state
 
 Single-package Vite + React 19 + TypeScript SPA. Despite the name, it is still the Vite starter
-template: `src/App.tsx` contains demo content only, and there is no todo domain logic, state
+template: `src/app/App.tsx` contains demo content only, and there is no todo domain logic, state
 management, persistence, or routing yet. Build the feature rather than assuming it exists.
 
-Entry path: `index.html` → `src/main.tsx` → `src/App.tsx`. Global theme tokens live in
-`src/index.css`; component styles in `src/App.css`; static assets in `src/assets/` and `public/`.
-SVG icons are referenced from the sprite: `<use href="/icons.svg#<id>">`.
+Entry path: `index.html` → `src/app/main.tsx` → `src/app/App.tsx`. Global theme tokens live in
+`src/app/styles/index.css`; static assets in `public/`. SVG icons, once added, are referenced from
+the sprite: `<use href="/icons.svg#<id>">`.
+
+## Structure
+
+Lightweight Feature-Sliced Design: layers `app`, `pages`, `features`, `entities`, `shared`. There is
+no `widgets` layer until a self-contained block actually needs one.
+
+    src/
+      app/       entry point, root component, global styles
+      pages/     one slice per page
+      features/  one slice per product action
+      entities/  one slice per business entity
+      shared/    reusable code detached from the domain; segments only
+
+Empty layer directories are kept in git with `.gitkeep`; add a slice on first real use rather than
+scaffolding placeholders.
+
+- Imports go strictly downward: `app → pages → features → entities → shared`. Slices on the same
+  layer never import each other.
+- A slice exposes its public API through `index.ts`; the `ui`, `model`, `api`, `lib`, `config`
+  segments stay internal. `app` and `shared` have no slices, only segments.
+- Slice and segment folders are `kebab-case`; component files are `PascalCase`.
+- Aliases mirror the layers: `@app`, `@pages`, `@features`, `@entities`, `@shared`. They are defined
+  once in `tsconfig.app.json` under `compilerOptions.paths` and Vite picks them up via
+  `resolve.tsconfigPaths`; do not duplicate them in `resolve.alias`.
+- Use relative imports inside a slice; aliases are for crossing layer boundaries.
 
 ## Commands
 
@@ -55,4 +80,6 @@ Examples:
   `import type`; no enums, namespaces, or constructor parameter properties.
 - `noUnusedLocals` and `noUnusedParameters` are on, so leftover code fails `pnpm build`.
 - Styling is plain CSS with native nesting — no Tailwind, CSS modules, or preprocessor. Colors and
-  fonts come from CSS variables in `src/index.css`, with dark mode via `prefers-color-scheme`.
+  fonts come from CSS variables in `src/app/styles/index.css`, with dark mode via
+  `prefers-color-scheme`. Aliased imports inside CSS require listing `src/**/*.css` in the tsconfig
+  `include` array.
