@@ -8,8 +8,5 @@ export default defineConfig({
     // Reuse `compilerOptions.paths` from tsconfig.app.json as import aliases.
     tsconfigPaths: true,
   },
-  plugins: [
-    react(),
-    babel({ presets: [reactCompilerPreset()] })
-  ],
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
 })

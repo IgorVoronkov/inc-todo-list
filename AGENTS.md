@@ -34,6 +34,8 @@ scaffolding placeholders.
   once in `tsconfig.app.json` under `compilerOptions.paths` and Vite picks them up via
   `resolve.tsconfigPaths`; do not duplicate them in `resolve.alias`.
 - Use relative imports inside a slice; aliases are for crossing layer boundaries.
+  `no-restricted-imports` only matches alias paths, so a relative `../../pages/...` from another
+  layer escapes `pnpm lint` — never cross layers with relative paths, always use the alias.
 
 ## Commands
 
@@ -43,10 +45,13 @@ scaffolding placeholders.
   `node_modules/.tmp` build info).
 - `pnpm lint` — `oxlint && tsc -b`, not ESLint (config: `.oxlintrc.json`); oxlint runs first because
   it is the faster check.
+- `pnpm format` — format the whole repo with oxfmt (config: `.oxfmtrc.json`).
+- `pnpm format:check` — report files that are not formatted.
+- `pnpm check` — `pnpm lint && pnpm format:check`; the gate to run before committing.
 - `pnpm preview` — serve the production build.
 
-There is no test runner, no CI, and no formatter config. Do not invent test commands or add tooling
-unasked. Use pnpm only; `pnpm-lock.yaml` is the lockfile.
+There is no test runner and no CI. Do not invent test commands or add tooling unasked. Use pnpm only;
+`pnpm-lock.yaml` is the lockfile.
 
 ## Commits
 
@@ -81,6 +86,15 @@ Examples:
 - TypeScript 7 with `verbatimModuleSyntax` and `erasableSyntaxOnly`: type-only imports must use
   `import type`; no enums, namespaces, or constructor parameter properties.
 - `noUnusedLocals` and `noUnusedParameters` are on, so leftover code fails `pnpm build`.
+- Checks have one owner each: `tsc` covers types and unused code, oxlint covers React,
+  accessibility, import cycles and FSD boundaries (alias imports only), oxfmt covers style. Do not
+  add an oxlint rule for something tsconfig already enforces, and never add style rules to oxlint.
+- Formatting is oxfmt with `semi: false` and `singleQuote: true`; run `pnpm format` instead of
+  hand-fixing style. Editor setup is local and not committed: `.vscode/` is intentionally
+  git-ignored. If you use VS Code, install the Oxc extension and set `editor.defaultFormatter` to
+  `oxc.oxc-vscode` and `editor.formatOnSave` to `true`, including for `[jsonc]`: the Oxc extension
+  maps `.oxlintrc.json` and `.oxfmtrc.json` to the `jsonc` language, and the built-in JSON formatter
+  reflows arrays differently, which makes `pnpm format:check` fail after a save.
 - Styling is plain CSS with native nesting — no Tailwind, CSS modules, or preprocessor. Colors and
   fonts come from CSS variables in `src/app/styles/index.css`, with dark mode via
   `prefers-color-scheme`. Aliased imports inside CSS require listing `src/**/*.css` in the tsconfig
