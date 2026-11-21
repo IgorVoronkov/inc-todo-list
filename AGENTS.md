@@ -38,9 +38,11 @@ scaffolding placeholders.
 ## Commands
 
 - `pnpm dev` — Vite dev server.
-- `pnpm build` — `tsc -b && vite build`; this is also the only typecheck.
-- `pnpm exec tsc -b` — typecheck alone (reuses `node_modules/.tmp` build info).
-- `pnpm lint` — oxlint, not ESLint (config: `.oxlintrc.json`).
+- `pnpm build` — `tsc -b && vite build`.
+- `pnpm typecheck` — `tsc -b` (also runs inside `pnpm lint` and `pnpm build`; reuses
+  `node_modules/.tmp` build info).
+- `pnpm lint` — `oxlint && tsc -b`, not ESLint (config: `.oxlintrc.json`); oxlint runs first because
+  it is the faster check.
 - `pnpm preview` — serve the production build.
 
 There is no test runner, no CI, and no formatter config. Do not invent test commands or add tooling
