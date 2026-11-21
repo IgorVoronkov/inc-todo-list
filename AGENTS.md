@@ -47,11 +47,23 @@ scaffolding placeholders.
   it is the faster check.
 - `pnpm format` — format the whole repo with oxfmt (config: `.oxfmtrc.json`).
 - `pnpm format:check` — report files that are not formatted.
-- `pnpm check` — `pnpm lint && pnpm format:check`; the gate to run before committing.
+- `pnpm check` — `pnpm lint && pnpm format:check`; the gate the pre-push hook runs.
 - `pnpm preview` — serve the production build.
 
 There is no test runner and no CI. Do not invent test commands or add tooling unasked. Use pnpm only;
 `pnpm-lock.yaml` is the lockfile.
+
+## Git hooks
+
+`pnpm install` runs `prepare`, which installs husky hooks from `.husky/`:
+
+- `pre-commit` runs lint-staged (config: `lint-staged.config.js`): `oxlint --fix` then `oxfmt` on
+  staged JS/TS files, and `oxfmt` on staged CSS, HTML, JSON, Markdown and YAML files.
+- `pre-push` runs `pnpm check`; type errors and formatting issues cannot be scoped to staged files,
+  so they are caught here rather than on commit.
+
+A failing hook means the change is not ready: fix the cause instead of bypassing it with
+`--no-verify`.
 
 ## Commits
 

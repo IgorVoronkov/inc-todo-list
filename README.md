@@ -12,3 +12,8 @@ Todo list SPA built with Vite, React 19 and TypeScript.
 - `pnpm format` — format the repo with oxfmt.
 - `pnpm format:check` — report files that are not formatted.
 - `pnpm check` — run the typecheck, lint, and format check.
+
+## Git hooks
+
+`pnpm install` installs husky hooks. Commits run oxlint and oxfmt on staged files through
+lint-staged; pushes run `pnpm check`.
