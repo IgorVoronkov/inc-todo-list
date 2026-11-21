@@ -39,28 +39,17 @@ scaffolding placeholders.
 
 ## Commands
 
-- `pnpm dev` — Vite dev server.
-- `pnpm build` — `tsc -b && vite build`.
-- `pnpm typecheck` — `tsc -b` (also runs inside `pnpm lint` and `pnpm build`; reuses
-  `node_modules/.tmp` build info).
-- `pnpm lint` — `oxlint && tsc -b`, not ESLint (config: `.oxlintrc.json`); oxlint runs first because
-  it is the faster check.
-- `pnpm format` — format the whole repo with oxfmt (config: `.oxfmtrc.json`).
-- `pnpm format:check` — report files that are not formatted.
-- `pnpm check` — `pnpm lint && pnpm format:check`; the gate the pre-push hook runs.
-- `pnpm preview` — serve the production build.
+`README.md` is the single reference for the pnpm scripts; keep it there instead of duplicating the
+list here. Every check the project has is scoped by `pnpm check`, which runs `pnpm lint` (oxlint,
+then `tsc -b`) and `pnpm format:check`.
 
-There is no test runner and no CI. Do not invent test commands or add tooling unasked. Use pnpm only;
-`pnpm-lock.yaml` is the lockfile.
+There is no test runner and no CI. Do not invent test commands or add tooling unasked. Use pnpm only:
+`packageManager` pins the version and `pnpm-lock.yaml` is the lockfile.
 
 ## Git hooks
 
-`pnpm install` runs `prepare`, which installs husky hooks from `.husky/`:
-
-- `pre-commit` runs lint-staged (config: `lint-staged.config.js`): `oxlint --fix` then `oxfmt` on
-  staged JS/TS files, and `oxfmt` on staged CSS, HTML, JSON, Markdown and YAML files.
-- `pre-push` runs `pnpm check`; type errors and formatting issues cannot be scoped to staged files,
-  so they are caught here rather than on commit.
+`pnpm install` installs husky hooks from `.husky/`: `pre-commit` runs lint-staged (oxlint and oxfmt
+on staged files), and `pre-push` runs `pnpm check`. See `README.md` for the full list.
 
 A failing hook means the change is not ready: fix the cause instead of bypassing it with
 `--no-verify`.
