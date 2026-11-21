@@ -4,6 +4,10 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    // Reuse `compilerOptions.paths` from tsconfig.app.json as import aliases.
+    tsconfigPaths: true,
+  },
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] })
