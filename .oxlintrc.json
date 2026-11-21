@@ -1,8 +1,81 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
+  "plugins": ["react", "jsx-a11y", "import", "promise", "typescript", "oxc"],
+  "categories": { "correctness": "error" },
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react/button-has-type": "error",
+    "react/no-array-index-key": "warn",
+    "react/exhaustive-deps": "warn",
+    "jsx-a11y/label-has-associated-control": "warn",
+    "typescript/no-explicit-any": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "eqeqeq": ["error", "always", { "null": "ignore" }],
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "eslint/no-unused-vars": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/pages/**/*"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@app/*"],
+                "message": "FSD: pages must not import from the app layer."
+              },
+              {
+                "group": ["@pages/*"],
+                "message": "FSD: pages must not import from other pages."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/**/*"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@app/*", "@pages/*"],
+                "message": "FSD: features must not import from higher layers."
+              },
+              {
+                "group": ["@features/*"],
+                "message": "FSD: features must not import from other features."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/entities/**/*", "src/shared/**/*"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@app/*", "@pages/*", "@features/*"],
+                "message": "FSD: this layer must not import from higher layers."
+              },
+              {
+                "group": ["@entities/*"],
+                "message": "FSD: entities are off limits here; same-layer slices must not import each other and shared must not import entities."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

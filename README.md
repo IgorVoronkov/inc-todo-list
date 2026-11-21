@@ -1,35 +1,19 @@
-# React + TypeScript + Vite
+# inc-todo-list
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Todo list SPA built with Vite, React 19 and TypeScript.
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `pnpm dev` — start the Vite dev server.
+- `pnpm build` — typecheck and build for production.
+- `pnpm typecheck` — run the TypeScript typecheck.
+- `pnpm preview` — serve the production build.
+- `pnpm lint` — run oxlint, then the typecheck.
+- `pnpm format` — format the repo with oxfmt.
+- `pnpm format:check` — report files that are not formatted.
+- `pnpm check` — run `pnpm lint` and `pnpm format:check`.
 
-## React Compiler
+## Git hooks
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`pnpm install` installs husky hooks. Commits run oxlint and oxfmt on staged files through
+lint-staged; pushes run `pnpm check`.
