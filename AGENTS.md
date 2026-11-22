@@ -21,8 +21,8 @@ import each other.
   `../../pages/...` silently bypasses the FSD check.
 - Folders `kebab-case`, component files `PascalCase`. Add a slice on first real use rather than
   scaffolding placeholders.
-- `app` keeps providers, the store, and the theme; `shared` keeps the API client and the typed
-  environment config (`shared/config/env.ts`).
+- `app` keeps providers and the theme; `shared` keeps the API client, the typed environment config
+  (`shared/config/env.ts`), and the Redux store with its typed hooks (`shared/lib/store`).
 
 ## Environment
 
@@ -52,6 +52,11 @@ Types `feat`, `fix`, `refactor`, `chore`, `docs`; scope optional and single (`to
 - One owner per check: `tsc` for types, oxlint for React/a11y/imports/FSD, oxfmt for style. Do not
   duplicate a tsconfig rule in oxlint, and never add style rules to oxlint.
 - oxfmt with `semi: false` and `singleQuote: true`; run `pnpm format` instead of hand-fixing style.
+  Editor setup is local and not committed: `.vscode/` is intentionally git-ignored. If you use VS
+  Code, install the Oxc extension and set `editor.defaultFormatter` to `oxc.oxc-vscode` and
+  `editor.formatOnSave` to `true`, including for `[jsonc]`: the Oxc extension maps `.oxlintrc.json`
+  and `.oxfmtrc.json` to the `jsonc` language, and the built-in JSON formatter reflows arrays
+  differently, which makes `pnpm format:check` fail after a save.
 - UI comes from MaterialUI 9 with Emotion; style with MUI components, the `sx` prop, and the theme in
   `app/styles/theme.ts`. Icons come from `@mui/icons-material`. No Tailwind, CSS modules,
   preprocessor, or a second styling library.

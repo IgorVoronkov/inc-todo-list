@@ -18,8 +18,13 @@ export const apiClient = axios.create({
  */
 export async function apiRequest<Data>(config: AxiosRequestConfig): Promise<Data> {
   try {
-    const response = await apiClient.request<{ data: Data }>(config)
-    return response.data.data
+    const response = await apiClient.request<{ data?: Data } | ''>(config)
+    const body = response.data
+    // A 204 answer carries an empty body: there is no envelope to unwrap.
+    if (typeof body !== 'object' || body === null) {
+      return undefined as Data
+    }
+    return body.data as Data
   } catch (error) {
     throw toApiError(error)
   }

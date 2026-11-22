@@ -37,6 +37,9 @@ function isJsonApiErrorDocument(value: unknown): value is JsonApiErrorDocument {
   )
 }
 
+// Assumptions about the Trelly API, fixed by its docs and observed answers:
+// 401 means an expired or invalid VITE_AUTH_TOKEN, 403 is returned for any
+// refused action (including the API rate limit), so only 401 names the cause.
 function messageForStatus(status: number): string {
   switch (status) {
     case 400:
@@ -44,7 +47,7 @@ function messageForStatus(status: number): string {
     case 401:
       return 'Токен доступа истёк — обновите VITE_AUTH_TOKEN в .env.local.'
     case 403:
-      return 'Действие недоступно: достигнут лимит API.'
+      return 'Действие недоступно.'
     case 404:
       return 'Запись не найдена.'
     case 429:
